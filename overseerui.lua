@@ -728,11 +728,13 @@ local all_rewards = {
     "Claws of Veeshan",
     "Terror of Luclin",
     "Night of Shadows",
-    "Laurion's Song"
+    "Laurion's Song",
+    "The Outer Brood"
 }
 
 local active_item_current_idx = 0
 local available_item_current_idx = 0
+local active_list_h = 150
 
 local all_eliteecho_rewards = {
     "None",
@@ -1043,16 +1045,17 @@ local function render_settings_rewards_active_section()
     ImGui.Separator()
     uiutils.text_colored(TextStyle.ItemValue, 'Select Reward Priorities')
     ImGui.Separator()
+    local _, avail_h = ImGui.GetContentRegionAvail()
+
+    -- Active Rewards list
     uiutils.text_colored(TextStyle.ItemValueDetail, 'Active Rewards')
-    ImGui.PushItemWidth(200)
-    if ImGui.BeginListBox(' ') then
+    if ImGui.BeginListBox(' ', ImVec2(mq.NumericLimits_Float(), active_list_h)) then
         for n, item in ipairs(Settings.Rewards) do
             local is_selected = n == active_item_current_idx
             local _, clicked = ImGui.Selectable(item, is_selected)
             if clicked then
                 active_item_current_idx = n
             end
-
             if is_selected then
                 ImGui.SetItemDefaultFocus()
             end
@@ -1061,6 +1064,8 @@ local function render_settings_rewards_active_section()
         uiutils.add_tooltip(
             'Indicates priority of rewards to select.  Higher on the list will be selected first, if available.')
     end
+
+    -- Buttons row
     if ImGui.Button(icons.FA_PLUS_CIRCLE) then
         settings.AddActiveReward(all_rewards[available_item_current_idx])
     end
@@ -1080,16 +1085,27 @@ local function render_settings_rewards_active_section()
         active_item_current_idx = settings.ReorderRewardDown(active_item_current_idx)
     end
     uiutils.add_tooltip('Moves currently selected reward down in priority.')
+
+    -- Draggable splitter
     uiutils.text_colored(TextStyle.ItemLabelHint, 'Available Rewards')
-    ImGui.PushItemWidth(200)
-    if ImGui.BeginListBox('') then
+    ImGui.InvisibleButton('##rewards_splitter', ImVec2(mq.NumericLimits_Float(), 6))
+    if ImGui.IsItemActive() then
+        active_list_h = active_list_h + ImGui.GetIO().MouseDelta.y
+        active_list_h = math.max(30, active_list_h)
+    end
+    if ImGui.IsItemHovered() or ImGui.IsItemActive() then
+        ImGui.SetMouseCursor(ImGuiMouseCursor.ResizeNS)
+    end
+
+    -- Available Rewards list - fills remaining space
+    local remaining_h = math.max(30, avail_h - active_list_h - 55)
+    if ImGui.BeginListBox('', ImVec2(mq.NumericLimits_Float(), remaining_h)) then
         for n, item in ipairs(all_rewards) do
             local is_selected = n == available_item_current_idx
             local _, clicked = ImGui.Selectable(item, is_selected)
             if clicked then
                 available_item_current_idx = n
             end
-
             if is_selected then
                 ImGui.SetItemDefaultFocus()
             end
