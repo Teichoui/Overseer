@@ -1049,7 +1049,7 @@ local function render_settings_rewards_active_section()
 
     -- Active Rewards list
     uiutils.text_colored(TextStyle.ItemValueDetail, 'Active Rewards')
-    if ImGui.BeginListBox(' ', ImVec2(mq.NumericLimits_Float(), active_list_h)) then
+    if ImGui.BeginListBox(' ', ImVec2(-1, active_list_h)) then
         for n, item in ipairs(Settings.Rewards) do
             local is_selected = n == active_item_current_idx
             local _, clicked = ImGui.Selectable(item, is_selected)
@@ -1087,8 +1087,7 @@ local function render_settings_rewards_active_section()
     uiutils.add_tooltip('Moves currently selected reward down in priority.')
 
     -- Draggable splitter
-    uiutils.text_colored(TextStyle.ItemLabelHint, 'Available Rewards')
-    ImGui.InvisibleButton('##rewards_splitter', ImVec2(mq.NumericLimits_Float(), 6))
+    ImGui.InvisibleButton('##rewards_splitter', ImVec2(-1, 6))
     if ImGui.IsItemActive() then
         active_list_h = active_list_h + ImGui.GetIO().MouseDelta.y
         active_list_h = math.max(30, active_list_h)
@@ -1098,8 +1097,9 @@ local function render_settings_rewards_active_section()
     end
 
     -- Available Rewards list - fills remaining space
+    uiutils.text_colored(TextStyle.ItemLabelHint, 'Available Rewards')
     local remaining_h = math.max(30, avail_h - active_list_h - 55)
-    if ImGui.BeginListBox('', ImVec2(mq.NumericLimits_Float(), remaining_h)) then
+    if ImGui.BeginListBox('', ImVec2(-1, remaining_h)) then
         for n, item in ipairs(all_rewards) do
             local is_selected = n == available_item_current_idx
             local _, clicked = ImGui.Selectable(item, is_selected)
