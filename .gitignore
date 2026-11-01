@@ -1,0 +1,10 @@
+# Runtime databases
+data/*.db
+data/*.db-shm
+data/*.db-wal
+
+# Archive folder
+data/Archive/
+
+# User-specific runtime files
+data/specified_quests.json
