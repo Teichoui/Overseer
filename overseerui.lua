@@ -729,7 +729,8 @@ local all_rewards = {
     "Terror of Luclin",
     "Night of Shadows",
     "Laurion's Song",
-    "The Outer Brood"
+    "The Outer Brood",
+    "Shattering of Ro"
 }
 
 local active_item_current_idx = 0
